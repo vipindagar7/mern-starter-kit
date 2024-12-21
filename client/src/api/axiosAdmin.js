@@ -1,16 +1,16 @@
 import axios from 'axios';
-import { logoutAPI, refreshTokenAPI } from './authAPI';
+import { adminLogoutAPI, refreshTokenAPI } from './adminApi';
 
 // Create an Axios instance
 const axiosInstance = axios.create({
-    baseURL: '',
-    withCredentials: true,  // Allows sending cookies with requests
+    baseURL: '',  // Set base URL here or use an environment variable
+    withCredentials: true,  // Ensures cookies are sent with requests
 });
 
 // Request Interceptor
 axiosInstance.interceptors.request.use(
     async (config) => {
-        // You can add any token or other headers here if needed
+        // You can add token or custom headers here if needed
         return config;
     },
     (error) => {
@@ -26,23 +26,23 @@ axiosInstance.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        // Check if it's an authentication error (403 Forbidden) and the request wasn't retried yet
+        // Check for 403 status and if the request has not been retried yet
         if (error.response && error.response.status === 403 && !originalRequest._retry) {
             originalRequest._retry = true;
 
             try {
                 // Attempt to refresh the token
-                await refreshTokenAPI(); // Call the refresh token function
+                const refreshResponse = await refreshTokenAPI(); // Assumes the response sets the refreshed token in cookies
 
-                // Retry the original request after refreshing the token
+                // Retry the original request with refreshed token if needed
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
-                await logoutAPI()
-                return Promise.reject(refreshError);  // Reject with refresh error
+                await adminLogoutAPI(); // Handle logout if refresh fails
+                return Promise.reject(refreshError);  // Reject with the refresh error
             }
         }
 
-        // If not a 403 error or request retry failed, reject the original error
+        // For any other error, or if retry fails, reject the original error
         return Promise.reject(error);
     }
 );

@@ -7,7 +7,9 @@ console.log("listining port ", process.env.DOMAIN)
 export default defineConfig({
   server: {
     proxy: {
-      '/api':`${process.env.DOMAIN}`
+      '/api': {
+        target: 'http://localhost:4000/',
+      },
     },
     port: 3000
   },

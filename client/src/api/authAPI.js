@@ -2,7 +2,6 @@ import axios from 'axios';
 import { apiError, apiResponse } from './utils';
 import apiClient from './axios';
 
-console.log("listining port ",)
 
 export const signinAPI = async (formData) => {
 
@@ -17,11 +16,28 @@ export const signinAPI = async (formData) => {
     }
 };
 
+export const verifyOtpAPI = async (formData) => {
+
+    try {
+        // creating a post request
+        const response = await axios.post('/api/auth/otpLogin', formData, { withCredentials: true });
+        // Process the response using apiResponse
+        return apiResponse(response);
+    } catch (error) {
+        // Handle the error using apiError
+        return apiError(error);
+    }
+};
+
 export const signupAPI = async (formData) => {
 
     try {
         // creating a post request
-        const response = await axios.post('/api/auth/signup', formData);
+        const response = await axios.post('/api/auth/signup', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
         // Process the response using apiResponse
         return apiResponse(response);
     } catch (error) {
@@ -68,11 +84,11 @@ export const refreshTokenAPI = async () => {
     }
 };
 
-export const logoutAPI = async () => {
+export const logoutAPI = async (id) => {
 
     try {
         // creating a post request
-        const response = await axios.post('/api/auth/logout', {}, { withCredentials: true })
+        const response = await apiClient.post('/api/auth/logout', { id }, { withCredentials: true })
         // Process the response using apiResponse
         return apiResponse(response);
     } catch (error) {
@@ -123,4 +139,83 @@ export const verifyUserAPI = async (token) => {
     }
 };
 
+export const updateProfileAPI = async (formData) => {
 
+    try {
+        // creating a post request
+        const response = await apiClient.patch('/api/auth/updateProfile', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        });
+        // Process the response using apiResponse
+        return apiResponse(response);
+    } catch (error) {
+        // Handle the error using apiError
+        return apiError(error);
+    }
+};
+
+export const updateSettingsAPI = async (formData) => {
+
+    try {
+        // creating a post request
+        const response = await apiClient.patch('/api/auth/updateSettings', formData, { withCredentials: true });
+        // Process the response using apiResponse
+        return apiResponse(response);
+    } catch (error) {
+        // Handle the error using apiError
+        return apiError(error);
+    }
+};
+
+export const changePasswordAPI = async (formData) => {
+
+    try {
+        // creating a post request
+        const response = await apiClient.patch(`/api/auth/changePassword`, formData, { withCredentials: true })
+        // Process the response using apiResponse
+        return apiResponse(response);
+    } catch (error) {
+        // Handle the error using apiError
+        return apiError(error);
+    }
+};
+
+export const deleteUserAPI = async (formData) => {
+    try {
+        // creating a post request
+        const response = await apiClient.post(`/api/auth/delete`, formData, { withCredentials: true })
+        // Process the response using apiResponse
+        return apiResponse(response);
+    } catch (error) {
+        // Handle the error using apiError
+        return apiError(error);
+    }
+};
+
+export const changeEmailAPI = async (formData) => {
+
+    try {
+        // creating a post request
+        const response = await apiClient.patch(`/api/auth/changeEmail`, formData, { withCredentials: true })
+        // Process the response using apiResponse
+        return apiResponse(response);
+    } catch (error) {
+        // Handle the error using apiError
+        return apiError(error);
+    }
+};
+
+export const changePhoneAPI = async (formData) => {
+
+    try {
+        // creating a post request
+        const response = await apiClient.patch(`/api/auth/changePhone`, formData, { withCredentials: true })
+        // Process the response using apiResponse
+        return apiResponse(response);
+    } catch (error) {
+        // Handle the error using apiError
+        return apiError(error);
+    }
+};

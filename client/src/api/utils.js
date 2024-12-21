@@ -5,10 +5,10 @@ export const apiResponse = (response) => {
         return {
             success: true,
             data: response.data,
-            message: response.data.message || "Request successful"
+            message: response.data.message || "Request successful",
+            step: response.data.step
         };
-    }
-
+    };
     // Handle unexpected successful response cases
     return {
         success: false,

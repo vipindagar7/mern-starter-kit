@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { useAlert } from '../contexts/AlertContext';
-import { forgotPasswordRequest } from '../redux/auth/authServices';
+import { useAlert } from '../../contexts/AlertContext';
+import { forgotPassword } from '../../redux/auth/authServices';
+import { useTheme } from '../../contexts/ThemeContext';
 
-const ForgotPasswordRequest = () => {
-    const [creds, setCreds] = useState({ email: '' });
-
+const ForgotPassword = () => {
+    const { theme } = useTheme()
+    const [creds, setCreds] = useState({ password: '' });
+    const { token } = useParams()
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { showAlert } = useAlert();
@@ -21,27 +23,27 @@ const ForgotPasswordRequest = () => {
     }
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(forgotPasswordRequest(creds.email, navigate, showAlert));
+        dispatch(forgotPassword(creds.password, token, navigate, showAlert));
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Forgot Password</h2>
+        <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-800'}`}>
+            <div className={`p-8 rounded-lg shadow-lg w-full max-w-md  ${theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
+                <h2 className="text-2xl font-bold mb-6 text-center">Forgot Password</h2>
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     {/* Email Input */}
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                            Email Address
+                            Password
                         </label>
                         <input
-                            type="email"
-                            name="email"
-                            id="email"
-                            value={creds.email}
+                            type="password"
+                            name="password"
+                            id="password"
+                            value={creds.password}
                             onChange={handleChange}
                             required
-                            className="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                            className={`mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500  ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-800'}`}
                         />
                     </div>
 
@@ -51,7 +53,7 @@ const ForgotPasswordRequest = () => {
                             type="submit"
                             className="w-full bg-indigo-600 text-white py-3 rounded-md shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                            Request Reset Link
+                            Reset Password
                         </button>
                     </div>
                 </form>
@@ -70,4 +72,4 @@ const ForgotPasswordRequest = () => {
     );
 };
 
-export default ForgotPasswordRequest;
+export default ForgotPassword;
